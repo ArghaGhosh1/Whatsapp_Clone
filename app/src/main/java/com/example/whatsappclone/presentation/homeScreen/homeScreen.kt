@@ -77,6 +77,41 @@ fun homeScreen() {
             "10:00 AM",
             "hello"
         ),
+
+        chatListModel(
+            R.drawable.salman_khan,
+            "Salman Khan",
+            "10:00 AM",
+            "hello"
+        ),
+
+        chatListModel(
+            R.drawable.salman_khan,
+            "Salman Khan",
+            "10:00 AM",
+            "hello"
+        ),
+
+        chatListModel(
+            R.drawable.salman_khan,
+            "Salman Khan",
+            "10:00 AM",
+            "hello"
+        ),
+
+        chatListModel(
+            R.drawable.salman_khan,
+            "Salman Khan",
+            "10:00 AM",
+            "hello"
+        ),
+
+        chatListModel(
+            R.drawable.salman_khan,
+            "Salman Khan",
+            "10:00 AM",
+            "hello"
+        ),
     )
 
     Scaffold(
