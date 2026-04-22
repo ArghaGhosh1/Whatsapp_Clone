@@ -30,8 +30,7 @@ import androidx.navigation.NavHostController
 import com.example.whatsappclone.R
 
 @Composable
-@Preview(showSystemUi = true)
-fun homeScreen() {
+fun homeScreen(navController: NavHostController) {
 
     val chatData = listOf(
         chatListModel(
