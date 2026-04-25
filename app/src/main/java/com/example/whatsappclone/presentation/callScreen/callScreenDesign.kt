@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -29,6 +30,16 @@ import com.example.whatsappclone.presentation.homeScreen.bottomNavigation
 @Composable
 @Preview
 fun callScreenDesign() {
+
+    var recentCallData = listOf(
+        recentCallsList("Salman Bhai",image = R.drawable.salman_khan,isMissedCall = true,time = " Yesterday, 8:30 PM"),
+        recentCallsList("Salman Bhai",image = R.drawable.salman_khan,isMissedCall = false,time = " Yesterday, 8:30 PM"),
+        recentCallsList("Salman Bhai",image = R.drawable.salman_khan,isMissedCall = true,time = " Yesterday, 8:30 PM"),
+        recentCallsList("Salman Bhai",image = R.drawable.salman_khan,isMissedCall = false,time = " Yesterday, 8:30 PM"),
+        recentCallsList("Salman Bhai",image = R.drawable.salman_khan,isMissedCall = true,time = " Yesterday, 8:30 PM"),
+        recentCallsList("Salman Bhai",image = R.drawable.salman_khan,isMissedCall = false,time = " Yesterday, 8:30 PM"),
+        recentCallsList("Salman Bhai",image = R.drawable.salman_khan,isMissedCall = true,time = " Yesterday, 8:30 PM")
+    )
 
     var favoritesDataList = listOf(
         favoritesList(R.drawable.carryminati, "Carry bhai"),
@@ -80,10 +91,11 @@ fun callScreenDesign() {
                 items(favoritesDataList) {
 
                     favoriteSectionDesign(favoritesList = it)
+
                 }
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Button(
                 onClick = {},
@@ -109,6 +121,14 @@ fun callScreenDesign() {
                 modifier = Modifier.padding(start = 16.dp, top = 30.dp),
                 fontSize = 20.sp
             )
+
+            LazyColumn(){
+
+                items(recentCallData){
+
+                    recentCallDesign(recentCallsList = it)
+                }
+            }
 
 
         }
