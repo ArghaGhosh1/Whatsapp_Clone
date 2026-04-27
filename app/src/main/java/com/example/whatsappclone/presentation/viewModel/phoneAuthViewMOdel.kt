@@ -108,23 +108,53 @@ class phoneAuthViewMOdel @Inject constructor(
 
     }
 
-    private fun markUserAsSignedIn(context: Context){
+    private fun markUserAsSignedIn(context: Context) {
 
         val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-        sharedPreferences.edit().putBoolean("isSignedIn",true).apply()
+        sharedPreferences.edit().putBoolean("isSignedIn", true).apply()
     }
 
-    private fun fetchUserProfile(userId: String){
+    private fun fetchUserProfile(userId: String) {
 
         val userRef = userRef.child(userId)
         userRef.get().addOnSuccessListener { snapshot ->
 
-            if(snapshot != null){
-                val userProfile = snapshot.getValue(phoneAuthData :: class.java)
+            if (snapshot != null) {
+                val userProfile = snapshot.getValue(phoneAuthData::class.java)
+                if (userProfile != null) {
+                    _authState.value =
+                        com.example.whatsappclone.presentation.viewModel.AuthState.succes(
+                            userProfile
+                        )
+                }
             }
         }
+            .addOnFailureListener {
+                _authState.value =
+                    com.example.whatsappclone.presentation.viewModel.AuthState.error("Failed to fetch user profile")
+            }
 
     }
+
+    fun verifyCode(otp: String, context: Context) {
+
+        val currentAuthState = _authState.value
+
+        if (currentAuthState !is AuthState.CodeSent || currentAuthState.verificationId.isEmpty()) {
+
+            Log.e("PhoneAuth", "Attempting to verify OTP without a valid verfication code")
+
+            _authState.value =
+                com.example.whatsappclone.presentation.viewModel.AuthState.error("varification not started or invalid Id")
+
+            return
+        }
+
+        val credential = PhoneAuthProvider.getCredential(currentAuthState.verificationId,otp)
+        signInWithCredentials(credential,context)
+    }
+
+
 }
 
 sealed class AuthState() {
