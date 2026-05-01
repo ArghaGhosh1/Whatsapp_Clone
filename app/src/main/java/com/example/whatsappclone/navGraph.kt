@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import com.example.whatsappclone.presentation.WelcomeScreen.welcomeScreen
 import com.example.whatsappclone.presentation.homeScreen.homeScreen
 import com.example.whatsappclone.presentation.spalashScreen.spalashScreen
+import com.example.whatsappclone.presentation.userProfileScreen.userProfileScreen
 import com.example.whatsappclone.presentation.userRagistrationScreen.userRagistrationScreen
 
 @Composable
@@ -35,6 +36,11 @@ fun setupNavGraph(navController: NavHostController){
         composable(Screen.homeScreen.route){
 
             homeScreen(navController = navController)
+        }
+
+        composable(Screen.userProfileScreen.route){
+
+            userProfileScreen(navController = navController)
         }
     }
 
