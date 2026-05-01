@@ -2,8 +2,8 @@ package com.example.whatsappclone.presentation.viewModel
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
 import android.util.Log
-import android.util.TimeUtils
 import androidx.lifecycle.ViewModel
 import com.example.whatsappclone.Model.phoneAuthData
 import com.google.firebase.FirebaseException
@@ -17,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.io.ByteArrayOutputStream
 import java.util.concurrent.TimeUnit
 
 
@@ -45,7 +46,7 @@ class phoneAuthViewMOdel @Inject constructor(
                 Log.d("phoneVarification", "onCodeSent: $id")
 
                 _authState.value =
-                    com.example.whatsappclone.presentation.viewModel.AuthState.CodeSent(
+                    com.example.whatsappclone.presentation.viewModel.AuthState.codeSent(
                         verificationId = id
                     )
             }
@@ -140,7 +141,7 @@ class phoneAuthViewMOdel @Inject constructor(
 
         val currentAuthState = _authState.value
 
-        if (currentAuthState !is AuthState.CodeSent || currentAuthState.verificationId.isEmpty()) {
+        if (currentAuthState !is AuthState.codeSent || currentAuthState.verificationId.isEmpty()) {
 
             Log.e("PhoneAuth", "Attempting to verify OTP without a valid verfication code")
 
@@ -154,6 +155,42 @@ class phoneAuthViewMOdel @Inject constructor(
         signInWithCredentials(credential,context)
     }
 
+    fun saveUserProfile(userId : String,name: String, status: String,profileImage: Bitmap?){
+
+        val database = FirebaseDatabase.getInstance().reference
+
+        val encodedImage = profileImage?.let { convertBitmapToBase64(it) }
+
+        val userProfile = phoneAuthData(
+            userId = userId,
+            name = name,
+            status = status,
+            profileImage = encodedImage
+        )
+
+        database.child("users").child(userId).setValue(userProfile)
+    }
+
+    fun convertBitmapToBase64(bitmap: Bitmap): String{
+
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream)
+        val byteArray = byteArrayOutputStream.toByteArray()
+        return android.util.Base64.encodeToString(byteArray, android.util.Base64.DEFAULT)
+
+    }
+
+    fun resetAuthState(){
+        _authState.value = com.example.whatsappclone.presentation.viewModel.AuthState.Ideal
+    }
+
+    fun signOut(activity: Activity){
+
+        firebaseAuth.signOut()
+        val sharedPreference = activity.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        sharedPreference.edit().putBoolean("isSignedIn",false).apply()
+    }
+
 
 }
 
@@ -161,7 +198,7 @@ sealed class AuthState() {
 
     object Ideal : AuthState()
     object Loading : AuthState()
-    data class CodeSent(val verificationId: String) : AuthState()
+    data class codeSent(val verificationId: String) : AuthState()
     data class succes(val user: phoneAuthData) : AuthState()
     data class error(val message: String) : AuthState()
 }
